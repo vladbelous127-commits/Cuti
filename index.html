@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Link in Bio</title>
+<style>
+  :root {
+    --accent: #e11d74;
+    --bg: #0d0d12;
+    --card: rgba(255, 255, 255, 0.06);
+    --card-border: rgba(255, 255, 255, 0.10);
+    --text: #f5f5f7;
+    --muted: #9b9ba6;
+    --radius: 18px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { min-height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Ambient background glow */
+  .bg-glow {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(60% 40% at 50% -5%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 70%),
+      radial-gradient(50% 35% at 85% 100%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%);
+  }
+
+  .page {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* ---------- Cover + avatar ---------- */
+  .cover {
+    position: relative;
+    height: 190px;
+    margin: 16px -8px 0;
+    border-radius: 22px;
+    overflow: hidden;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 55%, #1a1a24), #1a1a24 70%);
+  }
+  .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(13, 13, 18, 0.85), transparent 55%);
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 116px;
+    height: 116px;
+    margin: -62px auto 0;
+    z-index: 2;
+  }
+  .avatar-ring {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, var(--accent), #ffb86b);
+  }
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 3px solid var(--bg);
+    background: #23232e;
+  }
+  .avatar-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid var(--bg);
+    background: #23232e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .status-dot {
+    position: absolute;
+    right: 6px;
+    bottom: 8px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 3px solid var(--bg);
+  }
+
+  /* ---------- Identity ---------- */
+  .identity { text-align: center; margin-top: 14px; }
+  .name-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .verified {
+    width: 20px;
+    height: 20px;
+    flex: none;
+  }
+  .handle { color: var(--muted); font-size: 14px; margin-top: 3px; }
+  .location {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+  .bio {
+    margin: 14px auto 0;
+    max-width: 340px;
+    font-size: 15px;
+    line-height: 1.55;
+    color: #d6d6de;
+    white-space: pre-wrap;
+  }
+
+  /* ---------- Socials ---------- */
+  .socials {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  .social-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 19px;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .social-btn:hover { transform: translateY(-2px); background: rgba(255, 255, 255, 0.12); }
+  .social-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+  /* ---------- Link cards ---------- */
+  .links { margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
+  .link-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 18px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    color: var(--text);
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+  .link-card:hover {
+    transform: translateY(-2px) scale(1.01);
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    background: rgba(255, 255, 255, 0.09);
+  }
+  .link-card.featured {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 85%, #000), color-mix(in srgb, var(--accent) 55%, #000));
+    border-color: transparent;
+  }
+  .link-emoji {
+    width: 42px;
+    height: 42px;
+    flex: none;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+  }
+  .link-body { flex: 1; min-width: 0; }
+  .link-title { font-weight: 600; font-size: 15px; }
+  .link-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .link-card.featured .link-sub { color: rgba(255, 255, 255, 0.75); }
+  .chevron { color: var(--muted); flex: none; }
+  .link-card.featured .chevron { color: rgba(255, 255, 255, 0.8); }
+
+  footer {
+    margin-top: 44px;
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  footer b { color: var(--text); font-weight: 600; }
+
+  /* ---------- Edit mode ---------- */
+  .edit-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 50;
+    display: flex;
+    gap: 8px;
+  }
+  .btn {
+    border: 1px solid var(--card-border);
+    background: rgba(20, 20, 28, 0.85);
+    backdrop-filter: blur(8px);
+    color: var(--text);
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 9px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .btn:hover { background: rgba(255, 255, 255, 0.12); }
+  .btn.primary { background: var(--accent); border-color: transparent; }
+  .btn.primary:hover { filter: brightness(1.1); }
+  .btn.small { padding: 6px 12px; font-size: 12.5px; }
+  .btn.danger { color: #ff6b81; }
+
+  body.editing [data-edit="text"] {
+    outline: 1.5px dashed color-mix(in srgb, var(--accent) 70%, transparent);
+    outline-offset: 3px;
+    border-radius: 6px;
+    cursor: text;
+    min-width: 30px;
+  }
+  body.editing .cover, body.editing .avatar-wrap { cursor: pointer; }
+  .upload-hint {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: inherit;
+  }
+  body.editing .upload-hint { display: flex; }
+  .avatar-wrap .upload-hint { border-radius: 50%; font-size: 11.5px; text-align: center; }
+
+  .edit-panel {
+    display: none;
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    background: rgba(20, 20, 28, 0.7);
+    flex-direction: column;
+    gap: 12px;
+  }
+  body.editing .edit-panel { display: flex; }
+  .edit-panel h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .field-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .field-row label { font-size: 13px; color: var(--muted); min-width: 82px; }
+  .field-row input[type="text"], .field-row input[type="url"] {
+    flex: 1;
+    min-width: 150px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    color: var(--text);
+    font: inherit;
+    font-size: 13.5px;
+    padding: 8px 12px;
+  }
+  .field-row input[type="color"] {
+    width: 42px;
+    height: 32px;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  .link-tools {
+    display: none;
+    gap: 6px;
+    flex: none;
+  }
+  body.editing .link-tools { display: flex; }
+  body.editing .chevron { display: none; }
+  .tool-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+  }
+  .tool-btn:hover { background: rgba(255, 255, 255, 0.15); }
+  .social-tools { display: none; margin-top: 10px; flex-direction: column; gap: 8px; }
+  body.editing .social-tools { display: flex; }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1e1e28;
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    z-index: 60;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<div class="edit-toggle">
+  <button class="btn" id="exportBtn" hidden>Export</button>
+  <button class="btn" id="resetBtn" hidden>Reset</button>
+  <button class="btn primary" id="editBtn">Edit page</button>
+</div>
+
+<main class="page">
+  <div class="cover" id="cover">
+    <img id="coverImg" alt="" hidden>
+    <div class="upload-hint">Click to change cover</div>
+  </div>
+
+  <div class="avatar-wrap" id="avatarWrap">
+    <div class="avatar-ring">
+      <img class="avatar" id="avatarImg" alt="Profile photo" hidden>
+      <div class="avatar-fallback" id="avatarFallback">?</div>
+    </div>
+    <div class="status-dot" title="Online"></div>
+    <div class="upload-hint">Change photo</div>
+  </div>
+
+  <section class="identity">
+    <div class="name-row">
+      <span id="name" data-edit="text"></span>
+      <svg class="verified" viewBox="0 0 24 24" aria-label="Verified">
+        <path fill="#3897f0" d="M12 1.5l2.7 2 3.3-.4 1.3 3.1 3 1.4-.6 3.3 2.1 2.6-2.1 2.6.6 3.3-3 1.4-1.3 3.1-3.3-.4-2.7 2-2.7-2-3.3.4-1.3-3.1-3-1.4.6-3.3L.2 13.5l2.1-2.6-.6-3.3 3-1.4 1.3-3.1 3.3.4z"/>
+        <path fill="#fff" d="M10.6 15.6l-3.1-3.1 1.4-1.4 1.7 1.7 4.5-4.5 1.4 1.4z"/>
+      </svg>
+    </div>
+    <div class="handle" id="handle" data-edit="text"></div>
+    <div><span class="location"><span id="locationFlag" data-edit="text"></span><span id="location" data-edit="text"></span></span></div>
+    <p class="bio" id="bio" data-edit="text"></p>
+  </section>
+
+  <div class="socials" id="socials"></div>
+
+  <div class="social-tools" id="socialTools"></div>
+
+  <div class="links" id="links"></div>
+
+  <div class="edit-panel" id="editPanel">
+    <h3>Page settings</h3>
+    <div class="field-row">
+      <label for="accentInput">Accent color</label>
+      <input type="color" id="accentInput">
+    </div>
+    <div class="field-row">
+      <button class="btn small" id="addLinkBtn">+ Add link</button>
+      <button class="btn small" id="importBtn">Import JSON</button>
+      <input type="file" id="importFile" accept="application/json" hidden>
+    </div>
+    <p style="font-size:12px;color:var(--muted);line-height:1.5">
+      Tip: click any dashed text to edit it. Click the cover or avatar to upload an image.
+      Use ✎ on a link card to change its label, subtitle, emoji, or URL. Changes save automatically in this browser;
+      use Export to download your page data as JSON.
+    </p>
+  </div>
+
+  <footer><b id="footerName"></b> · <span id="footerText" data-edit="text"></span></footer>
+</main>
+
+<input type="file" id="coverFile" accept="image/*" hidden>
+<input type="file" id="avatarFile" accept="image/*" hidden>
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "biopage-data-v1";
+
+  var SOCIAL_ICONS = {
+    instagram: '<svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1.1-1.5.2-1.8.3-.4.2-.7.3-1 .7-.3.3-.5.6-.7 1-.1.3-.3.7-.3 1.8-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.5.3 1.8.2.4.3.7.7 1 .3.3.6.5 1 .7.3.1.7.3 1.8.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.5-.2 1.8-.3.4-.2.7-.3 1-.7.3-.3.5-.6.7-1 .1-.3.3-.7.3-1.8.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.5-.3-1.8-.2-.4-.3-.7-.7-1-.3-.3-.6-.5-1-.7-.3-.1-.7-.3-1.8-.3-1.2-.1-1.6-.1-4.7-.1zm0 3a5 5 0 110 10 5 5 0 010-10zm0 1.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zm5.2-3.1a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/></svg>',
+    tiktok: '<svg viewBox="0 0 24 24"><path d="M19.6 7.1a5 5 0 01-3.7-1.7v7.5a5.9 5.9 0 11-5.9-5.9c.3 0 .6 0 .9.1v3a2.9 2.9 0 102 2.8V1.5h3a5 5 0 003.7 4.5v3z"/></svg>',
+    x: '<svg viewBox="0 0 24 24"><path d="M17.8 2h3.3l-7.3 8.4L22.5 22h-6.7l-5.3-6.9L4.5 22H1.2l7.9-9L1 2h6.9l4.8 6.3L17.8 2zm-1.2 18h1.8L6.9 3.9H4.9L16.6 20z"/></svg>',
+    youtube: '<svg viewBox="0 0 24 24"><path d="M23 7.2s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.3-1C16.6 3.6 12 3.6 12 3.6s-4.6 0-7.8.3c-.4.1-1.4.1-2.3 1-.7.7-.9 2.3-.9 2.3S.8 9.1.8 11v1.8c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2 .9 2.5 1 1.8.2 7.6.3 7.6.3s4.6 0 7.8-.3c.4-.1 1.4-.1 2.3-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8V11c0-1.9-.2-3.8-.2-3.8zM9.7 15V8.4l6.1 3.3L9.7 15z"/></svg>',
+    telegram: '<svg viewBox="0 0 24 24"><path d="M21.9 3.4L1.9 11.1c-1.1.4-1.1 1.6 0 2l4.9 1.6 1.9 5.9c.3.8 1.3 1 1.9.4l2.8-2.7 5.1 3.8c.7.5 1.7.1 1.9-.8l3.3-16c.3-1.2-.9-2.2-1.8-1.9zM8.4 13.9l9.5-6c.4-.2.8.3.4.6l-7.7 7.2-.3 3.2-1.9-5z"/></svg>',
+    snapchat: '<svg viewBox="0 0 24 24"><path d="M12 2c3 0 5.4 2.3 5.5 5.3l.1 2c0 .2.2.4.4.4l1.4-.3c.5 0 .9.4.9.8 0 .4-.4.7-.9.9-.7.3-1.7.7-1.7 1.6 0 .3.1.6.4 1 .7 1.2 1.9 2.1 3.2 2.4.3.1.5.3.5.6 0 .8-1.5 1.2-2.7 1.4-.1 0-.2.3-.3.7-.1.3-.2.6-.5.6h-1.3c-.6 0-1.2.2-1.9.7-.9.6-1.9 1.3-3.1 1.3s-2.2-.7-3.1-1.3c-.7-.5-1.3-.7-1.9-.7H5.7c-.3 0-.4-.3-.5-.6-.1-.4-.2-.7-.3-.7-1.2-.2-2.7-.6-2.7-1.4 0-.3.2-.5.5-.6 1.3-.3 2.5-1.2 3.2-2.4.3-.4.4-.7.4-1 0-.9-1-1.3-1.7-1.6-.5-.2-.9-.5-.9-.9 0-.4.4-.8.9-.8l1.4.3c.2 0 .4-.2.4-.4l.1-2C6.6 4.3 9 2 12 2z"/></svg>',
+    website: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm7.9 9h-3.4c-.1-2.4-.7-4.6-1.6-6.2A8 8 0 0119.9 11zM12 4.1c1 1.2 1.9 3.6 2.1 6.9H9.9c.2-3.3 1.1-5.7 2.1-6.9zM9.1 4.8C8.2 6.4 7.6 8.6 7.5 11H4.1a8 8 0 015-6.2zM4.1 13h3.4c.1 2.4.7 4.6 1.6 6.2a8 8 0 01-5-6.2zM12 19.9c-1-1.2-1.9-3.6-2.1-6.9h4.2c-.2 3.3-1.1 5.7-2.1 6.9zm2.9-.7c.9-1.6 1.5-3.8 1.6-6.2h3.4a8 8 0 01-5 6.2z"/></svg>',
+    onlyfans: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 6.5a3.5 3.5 0 110 7 3.5 3.5 0 010-7zm7.9-.4c1.6 0 3-.4 4.1-1.6-.6 2.6-2.2 4.3-4.9 4.6a10 10 0 01-2.4 3.9c2.6-.3 4.9-1.9 6-4.4l-2.8-2.5z" opacity=".0"/><path d="M12 5.5A6.5 6.5 0 1018.5 12 6.5 6.5 0 0012 5.5zm0 9A2.5 2.5 0 1114.5 12 2.5 2.5 0 0112 14.5z"/></svg>'
+  };
+
+  var DEFAULT_DATA = {
+    name: "Your Name",
+    handle: "@yourhandle",
+    locationFlag: "📍",
+    location: "Your City",
+    bio: "Welcome to my page 💕\nAll my official links in one place — find me everywhere below!",
+    footerText: "All my official links",
+    accent: "#e11d74",
+    avatar: "",
+    cover: "",
+    socials: [
+      { type: "instagram", url: "https://instagram.com/yourhandle" },
+      { type: "tiktok", url: "https://tiktok.com/@yourhandle" },
+      { type: "x", url: "https://x.com/yourhandle" },
+      { type: "telegram", url: "https://t.me/yourhandle" }
+    ],
+    links: [
+      { emoji: "🔥", title: "My Exclusive Content", sub: "Subscribe for my private page", url: "https://example.com/exclusive", featured: true },
+      { emoji: "💬", title: "Chat With Me", sub: "I reply to everyone here", url: "https://example.com/chat", featured: false },
+      { emoji: "📸", title: "Instagram", sub: "Daily photos & stories", url: "https://instagram.com/yourhandle", featured: false },
+      { emoji: "🎵", title: "TikTok", sub: "Watch my latest videos", url: "https://tiktok.com/@yourhandle", featured: false },
+      { emoji: "🎁", title: "My Wishlist", sub: "Spoil me if you like", url: "https://example.com/wishlist", featured: false }
+    ]
+  };
+
+  var data = load();
+  var editing = false;
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* corrupted storage falls back to defaults */ }
+    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+      toast("Could not save (storage full?) — use Export instead");
+    }
+  }
+
+  function $(id) { return document.getElementById(id); }
+
+  function toast(msg) {
+    var el = $("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove("show"); }, 2200);
+  }
+
+  /* ---------- Rendering ---------- */
+
+  function render() {
+    document.documentElement.style.setProperty("--accent", data.accent);
+    $("accentInput").value = data.accent;
+
+    $("name").textContent = data.name;
+    $("handle").textContent = data.handle;
+    $("locationFlag").textContent = data.locationFlag;
+    $("location").textContent = data.location;
+    $("bio").textContent = data.bio;
+    $("footerName").textContent = data.name;
+    $("footerText").textContent = data.footerText;
+    document.title = data.name + " | Links";
+
+    var avatarImg = $("avatarImg"), fallback = $("avatarFallback");
+    if (data.avatar) {
+      avatarImg.src = data.avatar;
+      avatarImg.hidden = false;
+      fallback.style.display = "none";
+    } else {
+      avatarImg.hidden = true;
+      fallback.style.display = "flex";
+      fallback.textContent = (data.name.trim()[0] || "?").toUpperCase();
+    }
+
+    var coverImg = $("coverImg");
+    if (data.cover) { coverImg.src = data.cover; coverImg.hidden = false; }
+    else { coverImg.hidden = true; }
+
+    renderSocials();
+    renderLinks();
+  }
+
+  function renderSocials() {
+    var wrap = $("socials");
+    wrap.innerHTML = "";
+    data.socials.forEach(function (s) {
+      var a = document.createElement("a");
+      a.className = "social-btn";
+      a.href = s.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.title = s.type;
+      a.innerHTML = SOCIAL_ICONS[s.type] || SOCIAL_ICONS.website;
+      a.addEventListener("click", function (e) { if (editing) e.preventDefault(); });
+      wrap.appendChild(a);
+    });
+
+    var tools = $("socialTools");
+    tools.innerHTML = "<h3 style='font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)'>Social icons</h3>";
+    data.socials.forEach(function (s, i) {
+      var row = document.createElement("div");
+      row.className = "field-row";
+      var select = document.createElement("select");
+      select.style.cssText = "background:rgba(255,255,255,.06);border:1px solid var(--card-border);border-radius:10px;color:var(--text);padding:8px;font-size:13px";
+      Object.keys(SOCIAL_ICONS).forEach(function (k) {
+        var o = document.createElement("option");
+        o.value = k; o.textContent = k; o.style.color = "#000";
+        if (k === s.type) o.selected = true;
+        select.appendChild(o);
+      });
+      select.addEventListener("change", function () { s.type = select.value; save(); renderSocials(); });
+      var input = document.createElement("input");
+      input.type = "url"; input.value = s.url; input.placeholder = "https://…";
+      input.addEventListener("change", function () { s.url = input.value; save(); });
+      var del = document.createElement("button");
+      del.className = "tool-btn"; del.textContent = "✕"; del.title = "Remove";
+      del.addEventListener("click", function () { data.socials.splice(i, 1); save(); renderSocials(); });
+      row.appendChild(select); row.appendChild(input); row.appendChild(del);
+      tools.appendChild(row);
+    });
+    var add = document.createElement("button");
+    add.className = "btn small";
+    add.textContent = "+ Add social icon";
+    add.addEventListener("click", function () {
+      data.socials.push({ type: "website", url: "https://" });
+      save(); renderSocials();
+    });
+    tools.appendChild(add);
+  }
+
+  function renderLinks() {
+    var wrap = $("links");
+    wrap.innerHTML = "";
+    data.links.forEach(function (link, i) {
+      var a = document.createElement("a");
+      a.className = "link-card" + (link.featured ? " featured" : "");
+      a.href = link.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.addEventListener("click", function (e) { if (editing) e.preventDefault(); });
+
+      var emoji = document.createElement("div");
+      emoji.className = "link-emoji";
+      emoji.textContent = link.emoji;
+
+      var body = document.createElement("div");
+      body.className = "link-body";
+      var t = document.createElement("div");
+      t.className = "link-title";
+      t.textContent = link.title;
+      var s = document.createElement("div");
+      s.className = "link-sub";
+      s.textContent = link.sub;
+      body.appendChild(t);
+      if (link.sub) body.appendChild(s);
+
+      var chev = document.createElement("div");
+      chev.className = "chevron";
+      chev.innerHTML = "&#8250;";
+      chev.style.fontSize = "22px";
+
+      var tools = document.createElement("div");
+      tools.className = "link-tools";
+      tools.appendChild(toolBtn("✎", "Edit link", function () { editLink(i); }));
+      tools.appendChild(toolBtn("★", link.featured ? "Unfeature" : "Feature (highlight)", function () {
+        link.featured = !link.featured; save(); renderLinks();
+      }));
+      tools.appendChild(toolBtn("↑", "Move up", function () { moveLink(i, -1); }));
+      tools.appendChild(toolBtn("↓", "Move down", function () { moveLink(i, 1); }));
+      tools.appendChild(toolBtn("✕", "Delete", function () {
+        if (confirm('Delete link "' + link.title + '"?')) { data.links.splice(i, 1); save(); renderLinks(); }
+      }));
+
+      a.appendChild(emoji);
+      a.appendChild(body);
+      a.appendChild(chev);
+      a.appendChild(tools);
+      wrap.appendChild(a);
+    });
+  }
+
+  function toolBtn(label, title, fn) {
+    var b = document.createElement("button");
+    b.className = "tool-btn";
+    b.textContent = label;
+    b.title = title;
+    b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); fn(); });
+    return b;
+  }
+
+  function moveLink(i, dir) {
+    var j = i + dir;
+    if (j < 0 || j >= data.links.length) return;
+    var tmp = data.links[i];
+    data.links[i] = data.links[j];
+    data.links[j] = tmp;
+    save(); renderLinks();
+  }
+
+  function editLink(i) {
+    var link = data.links[i];
+    var title = prompt("Link title:", link.title);
+    if (title === null) return;
+    var sub = prompt("Subtitle (optional):", link.sub);
+    if (sub === null) return;
+    var emoji = prompt("Emoji / icon:", link.emoji);
+    if (emoji === null) return;
+    var url = prompt("URL:", link.url);
+    if (url === null) return;
+    link.title = title.trim() || link.title;
+    link.sub = sub.trim();
+    link.emoji = emoji.trim() || "🔗";
+    link.url = url.trim() || link.url;
+    save(); renderLinks();
+  }
+
+  /* ---------- Edit mode ---------- */
+
+  var TEXT_FIELDS = { name: "name", handle: "handle", locationFlag: "locationFlag", location: "location", bio: "bio", footerText: "footerText" };
+
+  function setEditing(on) {
+    editing = on;
+    document.body.classList.toggle("editing", on);
+    $("editBtn").textContent = on ? "Done" : "Edit page";
+    $("editBtn").classList.toggle("primary", !on);
+    $("exportBtn").hidden = !on;
+    $("resetBtn").hidden = !on;
+    Object.keys(TEXT_FIELDS).forEach(function (id) {
+      $(id).contentEditable = on ? "plaintext-only" : "false";
+    });
+    if (!on) render();
+  }
+
+  Object.keys(TEXT_FIELDS).forEach(function (id) {
+    $(id).addEventListener("input", function () {
+      data[TEXT_FIELDS[id]] = $(id).textContent;
+      if (id === "name") {
+        $("footerName").textContent = data.name;
+        if (!data.avatar) $("avatarFallback").textContent = (data.name.trim()[0] || "?").toUpperCase();
+      }
+      save();
+    });
+  });
+
+  $("editBtn").addEventListener("click", function () { setEditing(!editing); });
+
+  function bindUpload(clickTarget, inputId, key) {
+    $(clickTarget).addEventListener("click", function () {
+      if (editing) $(inputId).click();
+    });
+    $(inputId).addEventListener("change", function () {
+      var file = this.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        data[key] = reader.result;
+        save(); render();
+      };
+      reader.readAsDataURL(file);
+      this.value = "";
+    });
+  }
+  bindUpload("cover", "coverFile", "cover");
+  bindUpload("avatarWrap", "avatarFile", "avatar");
+
+  $("accentInput").addEventListener("input", function () {
+    data.accent = this.value;
+    document.documentElement.style.setProperty("--accent", data.accent);
+    save();
+  });
+
+  $("addLinkBtn").addEventListener("click", function () {
+    data.links.push({ emoji: "🔗", title: "New link", sub: "Tap to edit", url: "https://", featured: false });
+    save(); renderLinks();
+    editLink(data.links.length - 1);
+  });
+
+  $("exportBtn").addEventListener("click", function () {
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "biopage.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast("Page data exported");
+  });
+
+  $("importBtn").addEventListener("click", function () { $("importFile").click(); });
+  $("importFile").addEventListener("change", function () {
+    var file = this.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var imported = JSON.parse(reader.result);
+        if (!imported || typeof imported !== "object" || !Array.isArray(imported.links)) throw new Error("bad shape");
+        data = Object.assign(JSON.parse(JSON.stringify(DEFAULT_DATA)), imported);
+        save(); render(); setEditing(editing);
+        toast("Imported page data");
+      } catch (e) {
+        toast("Invalid JSON file");
+      }
+    };
+    reader.readAsText(file);
+    this.value = "";
+  });
+
+  $("resetBtn").addEventListener("click", function () {
+    if (!confirm("Reset the page to its default placeholder content? Your edits will be lost.")) return;
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    save(); render(); setEditing(editing);
+    toast("Page reset");
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
