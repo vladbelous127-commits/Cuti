@@ -1,0 +1,13 @@
+{
+  "name": "cuti-skills",
+  "owner": {
+    "name": "Cuti"
+  },
+  "plugins": [
+    {
+      "name": "business-skills-pack",
+      "source": "./",
+      "description": "34 business-focused skills for Claude Code: marketing, sales, finance, operations, HR, product, customer success, strategy, and analytics."
+    }
+  ]
+}
