@@ -1,1 +1,5 @@
 .env
+service_account.json
+*.json.key
+.last_row_state.json
+__pycache__/
