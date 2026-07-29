@@ -8,8 +8,14 @@
       "eyebrow": "K-POP / ASIAN LIVE",
       "heading": "Every stage, one ticket away.",
       "sub": "Lottery entries, general on-sale, and last-minute releases for tours across Asia.",
-      "primaryCta": { "label": "Browse events", "href": "#events" },
-      "secondaryCta": { "label": "How lottery works", "href": "#faq" }
+      "primaryCta": {
+        "label": "Browse events",
+        "href": "#events"
+      },
+      "secondaryCta": {
+        "label": "How lottery works",
+        "href": "#faq"
+      }
     },
     "footer": {
       "note": "Cuti is a demo storefront. No real tickets are sold here.",
@@ -17,40 +23,82 @@
         {
           "title": "Tickets",
           "links": [
-            { "label": "All events", "href": "#events" },
-            { "label": "On sale now", "href": "#events" },
-            { "label": "Lottery entries", "href": "#events" }
+            {
+              "label": "All events",
+              "href": "#events"
+            },
+            {
+              "label": "On sale now",
+              "href": "#events"
+            },
+            {
+              "label": "Lottery entries",
+              "href": "#events"
+            }
           ]
         },
         {
           "title": "Support",
           "links": [
-            { "label": "FAQ", "href": "#faq" },
-            { "label": "Contact", "href": "#" },
-            { "label": "Refund policy", "href": "#" }
+            {
+              "label": "FAQ",
+              "href": "#faq"
+            },
+            {
+              "label": "Contact",
+              "href": "#"
+            },
+            {
+              "label": "Refund policy",
+              "href": "#"
+            }
           ]
         },
         {
           "title": "Company",
           "links": [
-            { "label": "About", "href": "#" },
-            { "label": "Terms", "href": "#" },
-            { "label": "Privacy", "href": "#" }
+            {
+              "label": "About",
+              "href": "#"
+            },
+            {
+              "label": "Terms",
+              "href": "#"
+            },
+            {
+              "label": "Privacy",
+              "href": "#"
+            }
           ]
         }
       ]
     }
   },
-
   "statuses": {
-    "onsale": { "label": "On sale", "tone": "green" },
-    "lottery": { "label": "Lottery open", "tone": "violet" },
-    "soon": { "label": "Coming soon", "tone": "grey" },
-    "soldout": { "label": "Sold out", "tone": "red" }
+    "onsale": {
+      "label": "On sale",
+      "tone": "green"
+    },
+    "lottery": {
+      "label": "Lottery open",
+      "tone": "violet"
+    },
+    "soon": {
+      "label": "Coming soon",
+      "tone": "grey"
+    },
+    "soldout": {
+      "label": "Sold out",
+      "tone": "red"
+    }
   },
-
-  "genres": ["K-POP", "J-POP", "C-POP", "Hip-Hop", "Festival"],
-
+  "genres": [
+    "K-POP",
+    "J-POP",
+    "C-POP",
+    "Hip-Hop",
+    "Festival"
+  ],
   "events": [
     {
       "id": "aurora-tour-tokyo",
@@ -66,7 +114,26 @@
       "priceFrom": 12800,
       "currency": "JPY",
       "note": "All seats reserved. Goods booth opens 12:00.",
-      "href": "#"
+      "tiers": [
+        {
+          "id": "ga",
+          "label": "General Admission",
+          "note": "Reserved seat, arena bowl",
+          "price": 12800
+        },
+        {
+          "id": "front",
+          "label": "Front Block",
+          "note": "Rows 1-15, floor",
+          "price": 18500
+        },
+        {
+          "id": "vip",
+          "label": "VIP Soundcheck",
+          "note": "Early entry, soundcheck, goods set",
+          "price": 26000
+        }
+      ]
     },
     {
       "id": "aurora-tour-osaka",
@@ -82,7 +149,26 @@
       "priceFrom": 12800,
       "currency": "JPY",
       "note": "Lottery entry closes Aug 1, 23:59 JST.",
-      "href": "#"
+      "tiers": [
+        {
+          "id": "ga",
+          "label": "General Admission",
+          "note": "Reserved seat, arena bowl",
+          "price": 12800
+        },
+        {
+          "id": "front",
+          "label": "Front Block",
+          "note": "Rows 1-15, floor",
+          "price": 18500
+        },
+        {
+          "id": "vip",
+          "label": "VIP Soundcheck",
+          "note": "Early entry, soundcheck, goods set",
+          "price": 26000
+        }
+      ]
     },
     {
       "id": "nine-orbit-yokohama",
@@ -98,7 +184,20 @@
       "priceFrom": 11000,
       "currency": "JPY",
       "note": "Official resale may become available.",
-      "href": "#"
+      "tiers": [
+        {
+          "id": "ga",
+          "label": "General Admission",
+          "note": "Reserved seat",
+          "price": 11000
+        },
+        {
+          "id": "front",
+          "label": "Front Block",
+          "note": "Floor, rows 1-20",
+          "price": 17000
+        }
+      ]
     },
     {
       "id": "mira-solo-nagoya",
@@ -114,7 +213,20 @@
       "priceFrom": 9500,
       "currency": "JPY",
       "note": "Standing area is 18+ only.",
-      "href": "#"
+      "tiers": [
+        {
+          "id": "ga",
+          "label": "General Admission",
+          "note": "Reserved seat",
+          "price": 9500
+        },
+        {
+          "id": "stand",
+          "label": "Standing (18+)",
+          "note": "Floor, unreserved",
+          "price": 11500
+        }
+      ]
     },
     {
       "id": "velvet-static-fukuoka",
@@ -130,7 +242,20 @@
       "priceFrom": 8800,
       "currency": "JPY",
       "note": "Fan club pre-lottery running now.",
-      "href": "#"
+      "tiers": [
+        {
+          "id": "ga",
+          "label": "General Admission",
+          "note": "Reserved seat",
+          "price": 8800
+        },
+        {
+          "id": "front",
+          "label": "Front Block",
+          "note": "Floor, rows 1-12",
+          "price": 14000
+        }
+      ]
     },
     {
       "id": "hanabi-fest-chiba",
@@ -146,7 +271,26 @@
       "priceFrom": 15000,
       "currency": "JPY",
       "note": "2-day pass available. Re-entry permitted.",
-      "href": "#"
+      "tiers": [
+        {
+          "id": "day1",
+          "label": "Day 1 Pass",
+          "note": "Single day, re-entry allowed",
+          "price": 15000
+        },
+        {
+          "id": "day2",
+          "label": "Day 2 Pass",
+          "note": "Single day, re-entry allowed",
+          "price": 15000
+        },
+        {
+          "id": "both",
+          "label": "2-Day Pass",
+          "note": "Both days, re-entry allowed",
+          "price": 27000
+        }
+      ]
     },
     {
       "id": "koda-sapporo",
@@ -162,7 +306,20 @@
       "priceFrom": 7500,
       "currency": "JPY",
       "note": "On-sale date to be announced.",
-      "href": "#"
+      "tiers": [
+        {
+          "id": "ga",
+          "label": "General Admission",
+          "note": "Standing, unreserved",
+          "price": 7500
+        },
+        {
+          "id": "seat",
+          "label": "Balcony Seat",
+          "note": "Reserved, upper tier",
+          "price": 9000
+        }
+      ]
     },
     {
       "id": "nine-orbit-seoul",
@@ -178,10 +335,28 @@
       "priceFrom": 99000,
       "currency": "KRW",
       "note": "Overseas ticketing opens later.",
-      "href": "#"
+      "tiers": [
+        {
+          "id": "ga",
+          "label": "General Admission",
+          "note": "Reserved seat",
+          "price": 99000
+        },
+        {
+          "id": "front",
+          "label": "Front Block",
+          "note": "Floor, rows 1-20",
+          "price": 154000
+        },
+        {
+          "id": "vip",
+          "label": "VIP Package",
+          "note": "Soundcheck, goods, early entry",
+          "price": 231000
+        }
+      ]
     }
   ],
-
   "faq": [
     {
       "q": "How does the lottery work?",
@@ -195,5 +370,14 @@
       "q": "Can I transfer or resell a ticket?",
       "a": "Sold out events may reopen through official resale when other buyers release seats. Private resale is not supported."
     }
-  ]
+  ],
+  "checkout": {
+    "maxPerOrder": 4,
+    "serviceFeeRate": 0.05,
+    "bookingFee": {
+      "JPY": 220,
+      "KRW": 2000
+    },
+    "holdMinutes": 10
+  }
 }

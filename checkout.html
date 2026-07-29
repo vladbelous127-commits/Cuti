@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout — Cuti</title>
+<meta name="description" content="Complete your ticket order.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="index.html" id="brand"></a>
+    <nav>
+      <a href="index.html#events">Events</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="index.html#support">Support</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <a class="back" href="index.html#events">← Back to all events</a>
+</div>
+
+<main class="wrap" id="main"></main>
+
+<footer>
+  <div class="wrap">
+    <div class="fnote" id="fnote"></div>
+  </div>
+</footer>
+
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+const money = (amount, currency) =>
+  new Intl.NumberFormat('en', { style: 'currency', currency, maximumFractionDigits: 0 }).format(amount);
+
+let DATA, EVENT, tierId, qty = 1;
+
+fetch('data.json')
+  .then(r => r.json())
+  .then(data => { DATA = data; boot(); })
+  .catch(() => {
+    document.getElementById('main').innerHTML =
+      '<div class="blocked"><h2>Could not load event data</h2>' +
+      '<p>Serve this page over HTTP rather than opening the file directly.</p></div>';
+  });
+
+function boot() {
+  const { site } = DATA;
+  document.getElementById('brand').innerHTML =
+    `${esc(site.brand)} <span>${esc(site.tagline)}</span>`;
+  document.getElementById('fnote').textContent =
+    `© ${new Date().getFullYear()} ${site.brand}. ${site.footer.note}`;
+
+  const id = new URLSearchParams(location.search).get('event');
+  EVENT = DATA.events.find(e => e.id === id);
+
+  if (!EVENT) return blocked(
+    'Event not found',
+    id ? `No event matches “${id}”. It may have been removed.` : 'No event was selected.');
+
+  document.title = `${EVENT.artist} — Checkout — ${site.brand}`;
+
+  if (EVENT.status === 'soldout') return blocked(
+    'This event is sold out',
+    'Tickets may return through official resale if other buyers release seats.');
+
+  if (EVENT.status === 'soon') return blocked(
+    'Not on sale yet',
+    EVENT.note || 'The on-sale date for this event has not been announced.');
+
+  tierId = EVENT.tiers[0].id;
+  renderCheckout();
+}
+
+function blocked(heading, message) {
+  document.getElementById('main').innerHTML = `
+    <div class="blocked">
+      <h2>${esc(heading)}</h2>
+      <p>${esc(message)}</p>
+      <a class="btn btn-primary" href="index.html#events">Browse other events</a>
+    </div>`;
+}
+
+function renderCheckout() {
+  const ev = EVENT;
+  const isLottery = ev.status === 'lottery';
+  const max = DATA.checkout.maxPerOrder;
+  const d = new Date(ev.date + 'T00:00:00');
+  const when = d.toLocaleDateString('en', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+
+  document.getElementById('main').innerHTML = `
+  <div class="co-grid">
+    <form id="form" novalidate>
+      <div class="panel">
+        <p class="step">Step 1</p>
+        <h3>Choose your ticket</h3>
+        <p class="hint">${isLottery
+          ? 'Pick the tier you want to enter for. You are only charged if your entry wins.'
+          : 'Prices are per ticket, before fees.'}</p>
+        <div id="tiers"></div>
+      </div>
+
+      <div class="panel">
+        <p class="step">Step 2</p>
+        <h3>How many?</h3>
+        <p class="hint">Up to ${max} tickets per order.</p>
+        <div class="qty">
+          <button type="button" id="minus" aria-label="Remove one ticket">−</button>
+          <output id="qtyOut" aria-live="polite">1</output>
+          <button type="button" id="plus" aria-label="Add one ticket">+</button>
+          <span class="max">Max ${max}</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="step">Step 3</p>
+        <h3>Where do we send the tickets?</h3>
+        <p class="hint">${isLottery
+          ? 'Lottery results go to this address.'
+          : 'Your tickets and receipt go to this address.'}</p>
+        <div class="fields">
+          <div class="two-up">
+            <div class="field">
+              <label for="fname">First name</label>
+              <input id="fname" name="fname" autocomplete="given-name" required>
+            </div>
+            <div class="field">
+              <label for="lname">Last name</label>
+              <input id="lname" name="lname" autocomplete="family-name" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="step">Step 4</p>
+        <h3>Payment</h3>
+        <p class="hint">${isLottery
+          ? 'Nothing is charged now. Winning entries are billed after results.'
+          : 'Card details are collected by the payment provider, not by this page.'}</p>
+        <div class="notice">
+          <b>Demo build — no payment is taken.</b><br>
+          This storefront is a front end only. Hand the order off to a hosted
+          payment page such as Stripe Checkout, and let that provider collect
+          the card details so they never touch this site.
+        </div>
+      </div>
+    </form>
+
+    <aside class="panel summary">
+      <div class="sum-event">
+        <div class="artist">${esc(ev.artist)}</div>
+        <div class="title">${esc(ev.title)}</div>
+        <div class="where">
+          ${esc(when)}<br>
+          ${esc(ev.venue)}, ${esc(ev.city)}<br>
+          Doors ${esc(ev.doors)} · Start ${esc(ev.start)}
+        </div>
+      </div>
+      <div class="rows" id="rows"></div>
+      <div class="total"><span>Total</span><span class="amt" id="total"></span></div>
+      <button class="btn btn-primary" type="submit" form="form" id="submit"></button>
+      <p class="terms" id="terms"></p>
+    </aside>
+  </div>`;
+
+  document.getElementById('tiers').innerHTML = ev.tiers.map(t => `
+    <label class="tier">
+      <input type="radio" name="tier" value="${esc(t.id)}" ${t.id === tierId ? 'checked' : ''}>
+      <span>
+        <span class="t-name">${esc(t.label)}</span><br>
+        <span class="t-note">${esc(t.note)}</span>
+      </span>
+      <span class="t-price">${esc(money(t.price, ev.currency))}</span>
+    </label>`).join('');
+
+  document.getElementById('tiers').addEventListener('change', e => {
+    tierId = e.target.value;
+    updateSummary();
+  });
+  document.getElementById('minus').addEventListener('click', () => setQty(qty - 1));
+  document.getElementById('plus').addEventListener('click', () => setQty(qty + 1));
+
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const form = e.target;
+    if (!form.reportValidity()) return;
+    const t = ev.tiers.find(x => x.id === tierId);
+    alert(
+      `Demo checkout — nothing was charged.\n\n` +
+      `${ev.artist} — ${ev.title}\n${t.label} × ${qty}\n` +
+      `Total ${money(totals().total, ev.currency)}\n\n` +
+      `Connect a payment provider to complete this step.`);
+  });
+
+  setQty(1);
+}
+
+function setQty(n) {
+  qty = Math.min(DATA.checkout.maxPerOrder, Math.max(1, n));
+  document.getElementById('qtyOut').textContent = qty;
+  document.getElementById('minus').disabled = qty <= 1;
+  document.getElementById('plus').disabled = qty >= DATA.checkout.maxPerOrder;
+  updateSummary();
+}
+
+function totals() {
+  const tier = EVENT.tiers.find(t => t.id === tierId);
+  const subtotal = tier.price * qty;
+  const service = Math.round(subtotal * DATA.checkout.serviceFeeRate);
+  const booking = (DATA.checkout.bookingFee[EVENT.currency] ?? 0) * qty;
+  return { tier, subtotal, service, booking, total: subtotal + service + booking };
+}
+
+function updateSummary() {
+  const ev = EVENT, t = totals();
+  const cur = ev.currency;
+  const isLottery = ev.status === 'lottery';
+
+  document.getElementById('rows').innerHTML = `
+    <div class="row"><span>${esc(t.tier.label)} × ${qty}</span><span>${esc(money(t.subtotal, cur))}</span></div>
+    <div class="row"><span>Service fee</span><span>${esc(money(t.service, cur))}</span></div>
+    <div class="row"><span>Booking fee</span><span>${esc(money(t.booking, cur))}</span></div>`;
+
+  document.getElementById('total').textContent = money(t.total, cur);
+  document.getElementById('submit').textContent = isLottery ? 'Enter lottery' : 'Pay and get tickets';
+  document.getElementById('terms').textContent = isLottery
+    ? `Free to enter. You are charged ${money(t.total, cur)} only if you win.`
+    : `Tickets are held for ${DATA.checkout.holdMinutes} minutes while you complete payment.`;
+}
+</script>
+</body>
+</html>
