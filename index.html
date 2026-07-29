@@ -6,6 +6,8 @@
 <title>Cuti — Live Tickets</title>
 <meta name="description" content="Concert and live event tickets.">
 <style>
+  /* Dark is the default ground; light is applied by OS preference or an
+     explicit data-theme on the root element, which must win either way. */
   :root {
     --bg: #0b0b10;
     --bg-soft: #12121a;
@@ -22,6 +24,14 @@
       --bg: #ffffff; --bg-soft: #f6f6f9; --card: #ffffff; --line: #e5e5ec;
       --text: #14141c; --muted: #66667a;
     }
+  }
+  :root[data-theme="light"] {
+    --bg: #ffffff; --bg-soft: #f6f6f9; --card: #ffffff; --line: #e5e5ec;
+    --text: #14141c; --muted: #66667a;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b0b10; --bg-soft: #12121a; --card: #16161f; --line: #262633;
+    --text: #f2f2f6; --muted: #9a9aab;
   }
   * { box-sizing: border-box; }
   body {
@@ -202,7 +212,8 @@ function boot() {
   const { site, statuses, faq } = DATA;
 
   document.title = site.title;
-  document.querySelector('meta[name=description]').content = site.description;
+  const desc = document.querySelector('meta[name=description]');
+  if (desc) desc.content = site.description;
   document.getElementById('brand').innerHTML =
     `${esc(site.brand)} <span>${esc(site.tagline)}</span>`;
 
