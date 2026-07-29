@@ -363,6 +363,10 @@
       "a": "Enter during the lottery window and pay only if you win. Results are emailed after the window closes, and winning entries are charged automatically to the card on file."
     },
     {
+      "q": "How do I pay?",
+      "a": "By bank transfer. When you place an order we show your reference number and the account to pay into, and email the same details. Transfer the exact total within 72 hours, putting the reference in the transfer memo so we can match it to your order. Tickets are issued once the transfer clears, usually within one business day."
+    },
+    {
       "q": "When do general sale tickets go live?",
       "a": "Any tickets left after the lottery rounds move to general sale, first come first served. Events marked Coming soon do not have an on-sale date yet."
     },
@@ -379,5 +383,26 @@
       "KRW": 2000
     },
     "holdMinutes": 10
+  },
+  "payment": {
+    "method": "bank_transfer",
+    "deadlineHours": 72,
+    "referencePrefix": "CT",
+    "accounts": {
+      "JPY": {
+        "bankName": "Example Bank",
+        "branch": "Shibuya Branch (000)",
+        "accountType": "Futsu (ordinary)",
+        "accountNumber": "0000000",
+        "accountName": "CUTI LIVE TICKETS"
+      },
+      "KRW": {
+        "bankName": "Example Bank Korea",
+        "branch": "Seoul Main Branch",
+        "accountType": "Checking",
+        "accountNumber": "000-0000-0000",
+        "accountName": "CUTI LIVE TICKETS"
+      }
+    }
   }
 }

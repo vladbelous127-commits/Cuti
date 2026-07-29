@@ -148,16 +148,15 @@ function renderCheckout() {
 
       <div class="panel">
         <p class="step">Step 4</p>
-        <h3>Payment</h3>
+        <h3>Payment by bank transfer</h3>
         <p class="hint">${isLottery
-          ? 'Nothing is charged now. Winning entries are billed after results.'
-          : 'Card details are collected by the payment provider, not by this page.'}</p>
-        <div class="notice">
-          <b>Demo build — no payment is taken.</b><br>
-          This storefront is a front end only. Hand the order off to a hosted
-          payment page such as Stripe Checkout, and let that provider collect
-          the card details so they never touch this site.
-        </div>
+          ? 'Nothing to pay now. If your entry wins, we send transfer details with the result.'
+          : `You will get an account number and a reference on the next screen. Transfer within ${DATA.payment.deadlineHours} hours to keep your seats.`}</p>
+        <ul class="steps">
+          <li><span><b>Place your order</b>We reserve the seats and issue a payment reference.</span></li>
+          <li><span><b>Transfer the total</b>From your bank, quoting the reference in the memo.</span></li>
+          <li><span><b>We confirm and send tickets</b>Usually within one business day of the transfer clearing.</span></li>
+        </ul>
       </div>
     </form>
 
@@ -197,17 +196,112 @@ function renderCheckout() {
 
   document.getElementById('form').addEventListener('submit', e => {
     e.preventDefault();
-    const form = e.target;
-    if (!form.reportValidity()) return;
-    const t = ev.tiers.find(x => x.id === tierId);
-    alert(
-      `Demo checkout — nothing was charged.\n\n` +
-      `${ev.artist} — ${ev.title}\n${t.label} × ${qty}\n` +
-      `Total ${money(totals().total, ev.currency)}\n\n` +
-      `Connect a payment provider to complete this step.`);
+    if (!e.target.reportValidity()) return;
+    renderPending(new FormData(e.target).get('email'));
   });
 
   setQty(1);
+}
+
+// A real backend issues the reference and reserves the seats; this stands in
+// for that so the confirmation screen has something concrete to show.
+function makeReference() {
+  const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
+  const day = new Date().toISOString().slice(2, 10).replace(/-/g, '');
+  return `${DATA.payment.referencePrefix}-${day}-${rand}`;
+}
+
+function renderPending(email) {
+  const ev = EVENT, t = totals(), cur = ev.currency;
+  const isLottery = ev.status === 'lottery';
+  const acct = DATA.payment.accounts[cur];
+  const ref = makeReference();
+
+  const due = new Date(Date.now() + DATA.payment.deadlineHours * 3600 * 1000);
+  const dueText = due.toLocaleString('en', {
+    weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+  const rows = acct ? [
+    ['Bank', acct.bankName],
+    ['Branch', acct.branch],
+    ['Account type', acct.accountType],
+    ['Account number', acct.accountNumber, true],
+    ['Account name', acct.accountName],
+  ] : [];
+
+  document.getElementById('main').innerHTML = `
+  <div class="pending">
+    <div class="pending-head">
+      <div class="mark">${isLottery ? '🎟️' : '🏦'}</div>
+      <h2>${isLottery ? 'Entry received' : 'Order placed — now transfer the total'}</h2>
+      <p>${isLottery
+        ? `We will email the result to ${esc(email || 'your address')}. Winners get transfer details with it.`
+        : `We have held your seats and emailed these details to ${esc(email || 'your address')}.`}</p>
+    </div>
+
+    ${isLottery ? '' : `
+    <div class="callout">
+      <span class="k">Amount to transfer</span>
+      <span class="v">${esc(money(t.total, cur))}</span>
+      <span class="sub">${esc(t.tier.label)} × ${qty} · fees included</span>
+    </div>
+
+    <div class="callout">
+      <span class="k">Payment reference</span>
+      <span class="v ref">${esc(ref)}<button class="copy" type="button" data-copy="${esc(ref)}">Copy</button></span>
+      <span class="sub">Put this in the transfer memo so we can match your payment</span>
+    </div>
+
+    <div class="panel">
+      <h3>Transfer to</h3>
+      <p class="hint">Due by ${esc(dueText)} · ${DATA.payment.deadlineHours} hours from now</p>
+      <table class="bank">
+        ${rows.map(([k, v, copyable]) => `
+          <tr><th>${esc(k)}</th><td>${esc(v)}${
+            copyable ? `<button class="copy" type="button" data-copy="${esc(v)}">Copy</button>` : ''
+          }</td></tr>`).join('')}
+      </table>
+    </div>
+
+    <div class="panel">
+      <h3>What happens next</h3>
+      <ul class="steps">
+        <li><span><b>Transfer the exact amount</b>A different amount cannot be matched automatically and will delay your tickets.</span></li>
+        <li><span><b>We confirm receipt</b>Usually within one business day. You get an email either way.</span></li>
+        <li><span><b>Tickets are issued</b>Sent to ${esc(email || 'your email address')} once the transfer clears.</span></li>
+      </ul>
+    </div>
+
+    <div class="warn">
+      <b>Seats are released if the transfer does not arrive by ${esc(dueText)}.</b>
+      Transfer fees charged by your bank are yours to cover — send the full total
+      so the amount we receive matches the order.
+    </div>`}
+
+    <div class="warn" style="margin-top:16px">
+      <b>Demo build.</b> The account details above are placeholders and the
+      reference is generated in the browser. Replace the <code>payment</code>
+      block in <code>data.json</code> with real details, and issue references
+      from a backend that can reconcile them against your bank statement,
+      before taking any order.
+    </div>
+
+    <div style="text-align:center;margin-top:26px">
+      <a class="btn btn-ghost" href="index.html#events">Back to all events</a>
+    </div>
+  </div>`;
+
+  document.getElementById('main').addEventListener('click', e => {
+    const btn = e.target.closest('.copy');
+    if (!btn) return;
+    navigator.clipboard?.writeText(btn.dataset.copy).then(() => {
+      const was = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(() => { btn.textContent = was; }, 1400);
+    }, () => {});
+  });
+
+  window.scrollTo(0, 0);
 }
 
 function setQty(n) {
@@ -237,10 +331,10 @@ function updateSummary() {
     <div class="row"><span>Booking fee</span><span>${esc(money(t.booking, cur))}</span></div>`;
 
   document.getElementById('total').textContent = money(t.total, cur);
-  document.getElementById('submit').textContent = isLottery ? 'Enter lottery' : 'Pay and get tickets';
+  document.getElementById('submit').textContent = isLottery ? 'Enter lottery' : 'Place order';
   document.getElementById('terms').textContent = isLottery
-    ? `Free to enter. You are charged ${money(t.total, cur)} only if you win.`
-    : `Tickets are held for ${DATA.checkout.holdMinutes} minutes while you complete payment.`;
+    ? `Free to enter. You pay ${money(t.total, cur)} by transfer only if you win.`
+    : `Nothing is charged now. You transfer ${money(t.total, cur)} within ${DATA.payment.deadlineHours} hours to confirm.`;
 }
 </script>
 </body>
