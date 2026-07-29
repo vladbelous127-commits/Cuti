@@ -1,0 +1,199 @@
+{
+  "site": {
+    "brand": "Cuti",
+    "tagline": "Live Tickets",
+    "title": "Cuti — K-POP & Asian Live Tickets",
+    "description": "Concert and live event tickets. Lottery entries, general sale, and last-minute releases.",
+    "hero": {
+      "eyebrow": "K-POP / ASIAN LIVE",
+      "heading": "Every stage, one ticket away.",
+      "sub": "Lottery entries, general on-sale, and last-minute releases for tours across Asia.",
+      "primaryCta": { "label": "Browse events", "href": "#events" },
+      "secondaryCta": { "label": "How lottery works", "href": "#faq" }
+    },
+    "footer": {
+      "note": "Cuti is a demo storefront. No real tickets are sold here.",
+      "columns": [
+        {
+          "title": "Tickets",
+          "links": [
+            { "label": "All events", "href": "#events" },
+            { "label": "On sale now", "href": "#events" },
+            { "label": "Lottery entries", "href": "#events" }
+          ]
+        },
+        {
+          "title": "Support",
+          "links": [
+            { "label": "FAQ", "href": "#faq" },
+            { "label": "Contact", "href": "#" },
+            { "label": "Refund policy", "href": "#" }
+          ]
+        },
+        {
+          "title": "Company",
+          "links": [
+            { "label": "About", "href": "#" },
+            { "label": "Terms", "href": "#" },
+            { "label": "Privacy", "href": "#" }
+          ]
+        }
+      ]
+    }
+  },
+
+  "statuses": {
+    "onsale": { "label": "On sale", "tone": "green" },
+    "lottery": { "label": "Lottery open", "tone": "violet" },
+    "soon": { "label": "Coming soon", "tone": "grey" },
+    "soldout": { "label": "Sold out", "tone": "red" }
+  },
+
+  "genres": ["K-POP", "J-POP", "C-POP", "Hip-Hop", "Festival"],
+
+  "events": [
+    {
+      "id": "aurora-tour-tokyo",
+      "artist": "AURORA LINE",
+      "title": "ASIA TOUR 2026 — SIGNAL",
+      "genre": "K-POP",
+      "date": "2026-08-14",
+      "doors": "17:00",
+      "start": "18:30",
+      "venue": "Tokyo Dome",
+      "city": "Tokyo",
+      "status": "onsale",
+      "priceFrom": 12800,
+      "currency": "JPY",
+      "note": "All seats reserved. Goods booth opens 12:00.",
+      "href": "#"
+    },
+    {
+      "id": "aurora-tour-osaka",
+      "artist": "AURORA LINE",
+      "title": "ASIA TOUR 2026 — SIGNAL",
+      "genre": "K-POP",
+      "date": "2026-08-22",
+      "doors": "16:30",
+      "start": "18:00",
+      "venue": "Kyocera Dome",
+      "city": "Osaka",
+      "status": "lottery",
+      "priceFrom": 12800,
+      "currency": "JPY",
+      "note": "Lottery entry closes Aug 1, 23:59 JST.",
+      "href": "#"
+    },
+    {
+      "id": "nine-orbit-yokohama",
+      "artist": "NINE ORBIT",
+      "title": "THE FIRST LIGHT",
+      "genre": "K-POP",
+      "date": "2026-09-05",
+      "doors": "17:30",
+      "start": "19:00",
+      "venue": "K-Arena Yokohama",
+      "city": "Yokohama",
+      "status": "soldout",
+      "priceFrom": 11000,
+      "currency": "JPY",
+      "note": "Official resale may become available.",
+      "href": "#"
+    },
+    {
+      "id": "mira-solo-nagoya",
+      "artist": "MIRA",
+      "title": "SOLO CONCERT — ROOMS",
+      "genre": "J-POP",
+      "date": "2026-09-19",
+      "doors": "18:00",
+      "start": "19:00",
+      "venue": "Nippon Gaishi Hall",
+      "city": "Nagoya",
+      "status": "onsale",
+      "priceFrom": 9500,
+      "currency": "JPY",
+      "note": "Standing area is 18+ only.",
+      "href": "#"
+    },
+    {
+      "id": "velvet-static-fukuoka",
+      "artist": "VELVET STATIC",
+      "title": "NIGHT DRIVE LIVE",
+      "genre": "C-POP",
+      "date": "2026-10-03",
+      "doors": "17:00",
+      "start": "18:30",
+      "venue": "Marine Messe Fukuoka",
+      "city": "Fukuoka",
+      "status": "lottery",
+      "priceFrom": 8800,
+      "currency": "JPY",
+      "note": "Fan club pre-lottery running now.",
+      "href": "#"
+    },
+    {
+      "id": "hanabi-fest-chiba",
+      "artist": "Various Artists",
+      "title": "HANABI SOUND FESTIVAL",
+      "genre": "Festival",
+      "date": "2026-10-17",
+      "doors": "10:00",
+      "start": "11:00",
+      "venue": "Makuhari Messe",
+      "city": "Chiba",
+      "status": "onsale",
+      "priceFrom": 15000,
+      "currency": "JPY",
+      "note": "2-day pass available. Re-entry permitted.",
+      "href": "#"
+    },
+    {
+      "id": "koda-sapporo",
+      "artist": "KODA & THE PARADE",
+      "title": "WINTER SESSIONS",
+      "genre": "Hip-Hop",
+      "date": "2026-11-08",
+      "doors": "18:00",
+      "start": "19:00",
+      "venue": "Zepp Sapporo",
+      "city": "Sapporo",
+      "status": "soon",
+      "priceFrom": 7500,
+      "currency": "JPY",
+      "note": "On-sale date to be announced.",
+      "href": "#"
+    },
+    {
+      "id": "nine-orbit-seoul",
+      "artist": "NINE ORBIT",
+      "title": "THE FIRST LIGHT — FINALE",
+      "genre": "K-POP",
+      "date": "2026-12-12",
+      "doors": "17:00",
+      "start": "18:30",
+      "venue": "KSPO Dome",
+      "city": "Seoul",
+      "status": "soon",
+      "priceFrom": 99000,
+      "currency": "KRW",
+      "note": "Overseas ticketing opens later.",
+      "href": "#"
+    }
+  ],
+
+  "faq": [
+    {
+      "q": "How does the lottery work?",
+      "a": "Enter during the lottery window and pay only if you win. Results are emailed after the window closes, and winning entries are charged automatically to the card on file."
+    },
+    {
+      "q": "When do general sale tickets go live?",
+      "a": "Any tickets left after the lottery rounds move to general sale, first come first served. Events marked Coming soon do not have an on-sale date yet."
+    },
+    {
+      "q": "Can I transfer or resell a ticket?",
+      "a": "Sold out events may reopen through official resale when other buyers release seats. Private resale is not supported."
+    }
+  ]
+}
