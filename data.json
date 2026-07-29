@@ -1,8 +1,8 @@
 {
   "site": {
-    "brand": "Cuti",
+    "brand": "FC liveHub Online",
     "tagline": "Live Tickets",
-    "title": "Cuti — K-POP & Asian Live Tickets",
+    "title": "FC liveHub Online — K-POP & Asian Live Tickets",
     "description": "Concert and live event tickets. Lottery entries, general sale, and last-minute releases.",
     "hero": {
       "eyebrow": "K-POP / ASIAN LIVE",
@@ -18,7 +18,7 @@
       }
     },
     "footer": {
-      "note": "Cuti is a demo storefront. No real tickets are sold here.",
+      "note": "A demo storefront. No real tickets are sold here.",
       "columns": [
         {
           "title": "Tickets",
@@ -387,21 +387,21 @@
   "payment": {
     "method": "bank_transfer",
     "deadlineHours": 72,
-    "referencePrefix": "CT",
+    "referencePrefix": "FC",
     "accounts": {
       "JPY": {
         "bankName": "Example Bank",
         "branch": "Shibuya Branch (000)",
         "accountType": "Futsu (ordinary)",
         "accountNumber": "0000000",
-        "accountName": "CUTI LIVE TICKETS"
+        "accountName": "FC LIVEHUB ONLINE"
       },
       "KRW": {
         "bankName": "Example Bank Korea",
         "branch": "Seoul Main Branch",
         "accountType": "Checking",
         "accountNumber": "000-0000-0000",
-        "accountName": "CUTI LIVE TICKETS"
+        "accountName": "FC LIVEHUB ONLINE"
       }
     }
   }
