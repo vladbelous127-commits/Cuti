@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Appearance &amp; VIP Meet Bookings</title>
+<meta name="description" content="Enquire about appearance bookings.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="index.html" id="brand"></a>
+    <nav>
+      <a href="#formats">Formats</a>
+      <a href="#process">How it works</a>
+      <a href="#faq">FAQ</a>
+      <span id="tgNav"></span>
+      <a class="btn btn-primary" href="enquire.html">Request a quote</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="label" id="heroEyebrow"></p>
+      <h1 id="heroHeading"></h1>
+      <p id="heroSub"></p>
+      <div class="btns" id="heroBtns"></div>
+    </div>
+    <div id="heroShot"></div>
+  </div>
+</section>
+
+<section class="about">
+  <div class="wrap about-grid">
+    <div id="aboutShot"></div>
+    <div>
+      <p class="label" id="talentRole"></p>
+      <h2 id="talentName"></h2>
+      <p id="talentBio"></p>
+      <ul class="ticks" id="talentHighlights"></ul>
+    </div>
+  </div>
+</section>
+
+<section id="formats">
+  <div class="wrap">
+    <p class="label">Formats</p>
+    <h2>Appearance formats</h2>
+    <p class="lede" id="formatsLede"></p>
+    <div class="formats" id="formatList"></div>
+  </div>
+</section>
+
+<section id="quoting">
+  <div class="wrap">
+    <p class="label">Fees</p>
+    <h2 id="quotingHeading"></h2>
+    <p class="lede" id="quotingNote"></p>
+    <div class="factors" id="factors"></div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <p class="label">Process</p>
+    <h2>From enquiry to confirmed booking</h2>
+    <p class="lede">Four steps, and no money changes hands through this website.</p>
+    <ol class="process" id="processList"></ol>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="wrap">
+    <p class="label">Gallery</p>
+    <h2 id="galleryHeading"></h2>
+    <p class="lede" id="galleryNote"></p>
+    <div class="grid-shots" id="shots"></div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <p class="label">Questions</p>
+    <h2>Frequently asked</h2>
+    <div id="faqList" style="margin-top:28px"></div>
+  </div>
+</section>
+
+<section id="cta" style="text-align:center">
+  <div class="wrap">
+    <h2>Tell us about your event</h2>
+    <p class="lede" style="margin-inline:auto" id="ctaLede"></p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn btn-primary" href="enquire.html">Request a quote</a>
+      <span id="tgCta"></span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fcols" id="fcols"></div>
+    <div class="fnote" id="fnote"></div>
+  </div>
+</footer>
+
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+// Inline so the icon needs no network request and inherits the text colour.
+const TG_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">'
+  + '<path d="M21.9 4.3 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1L18.1 6c.4-.4-.1-.6-.6-.2L6.1 12.9l-4.9-1.5c-1.1-.3-1.1-1 .2-1.5l19.1-7.4c.9-.3 1.7.2 1.4 1.8z"/></svg>';
+
+let DATA;
+
+fetch('data.json')
+  .then(r => r.json())
+  .then(data => { DATA = data; boot(); })
+  .catch(() => {
+    document.getElementById('formatList').innerHTML =
+      '<p class="lede">Could not load data.json. Serve this page over HTTP rather than opening the file directly.</p>';
+  });
+
+// An empty src means "no photo supplied yet", so the slot shows what belongs there.
+function shot(img, extraClass = '') {
+  const shape = img.shape === 'square' ? 'square' : 'portrait';
+  return img.src
+    ? `<img class="shot ${shape} ${extraClass}" src="${esc(img.src)}" alt="${esc(img.alt)}">`
+    : `<div class="ph ${shape} ${extraClass}">${esc(img.alt)}<small>Drop an image path into data.json</small></div>`;
+}
+
+function telegramLink(kind) {
+  const tg = DATA.site.contact?.telegram;
+  if (!tg?.show || !tg.href) return '';
+  const cls = kind === 'btn' ? 'btn btn-ghost' : '';
+  return `<a class="${cls}" href="${esc(tg.href)}" target="_blank" rel="noopener noreferrer"
+            style="display:inline-flex;align-items:center;gap:8px;text-decoration:none">
+            ${TG_ICON}<span>${esc(tg.label || 'Telegram')}</span></a>`;
+}
+
+function boot() {
+  const { site, talent, gallery, formats, quoting, process, faq } = DATA;
+
+  document.title = site.title;
+  const desc = document.querySelector('meta[name=description]');
+  if (desc) desc.content = site.description;
+
+  document.getElementById('brand').innerHTML =
+    `${esc(site.brand)}<span>${esc(site.tagline)}</span>`;
+  document.getElementById('tgNav').innerHTML = telegramLink('nav');
+  document.getElementById('tgCta').innerHTML = telegramLink('btn');
+
+  document.getElementById('heroEyebrow').textContent = site.hero.eyebrow;
+  document.getElementById('heroHeading').textContent = site.hero.heading;
+  document.getElementById('heroSub').textContent = site.hero.sub;
+  document.getElementById('heroBtns').innerHTML = `
+    <a class="btn btn-primary" href="${esc(site.hero.primaryCta.href)}">${esc(site.hero.primaryCta.label)}</a>
+    <a class="btn btn-ghost" href="${esc(site.hero.secondaryCta.href)}">${esc(site.hero.secondaryCta.label)}</a>`;
+  document.getElementById('heroShot').innerHTML = shot(gallery.images[0] ?? { alt: 'Portrait', shape: 'portrait' });
+  document.getElementById('aboutShot').innerHTML = shot(gallery.images[1] ?? { alt: 'Portrait', shape: 'portrait' });
+
+  document.getElementById('talentRole').textContent = talent.role;
+  document.getElementById('talentName').textContent = talent.name;
+  document.getElementById('talentBio').textContent = talent.bio;
+  document.getElementById('talentHighlights').innerHTML =
+    talent.highlights.map(h => `<li>${esc(h)}</li>`).join('');
+
+  document.getElementById('formatsLede').textContent =
+    `Four formats, ordered by time on site. Every one is quoted individually — pick the closest and we will tailor it.`;
+  document.getElementById('formatList').innerHTML = formats.map(f => `
+    <div class="format">
+      <div class="fmt-dur">${esc(f.duration)}</div>
+      <div>
+        <p class="fmt-name">${esc(f.name)}</p>
+        <p class="fmt-sum">${esc(f.summary)}</p>
+        <ul class="fmt-inc">${f.includes.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
+      </div>
+      <a class="btn btn-ghost" href="enquire.html?format=${encodeURIComponent(f.id)}">Request a quote</a>
+    </div>`).join('');
+
+  document.getElementById('quotingHeading').textContent = quoting.heading;
+  document.getElementById('quotingNote').textContent = quoting.note;
+  document.getElementById('factors').innerHTML =
+    quoting.factors.map(f => `<div>${esc(f)}</div>`).join('');
+
+  document.getElementById('processList').innerHTML = process.map(s =>
+    `<li><b>${esc(s.title)}</b><span>${esc(s.detail)}</span></li>`).join('');
+
+  document.getElementById('galleryHeading').textContent = gallery.heading;
+  document.getElementById('galleryNote').textContent = gallery.note;
+  document.getElementById('shots').innerHTML = gallery.images.map(i => shot(i)).join('');
+
+  document.getElementById('faqList').innerHTML = faq.map(f =>
+    `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('');
+
+  document.getElementById('ctaLede').textContent =
+    `Send the date, location and format. You will hear back within ${DATA.enquiry.responseDays} business days.`;
+
+  document.getElementById('fcols').innerHTML = site.footer.columns.map(col => `
+    <div class="fcol">
+      <h4>${esc(col.title)}</h4>
+      ${col.links.map(l => `<a href="${esc(l.href)}">${esc(l.label)}</a>`).join('')}
+    </div>`).join('');
+  document.getElementById('fnote').textContent =
+    `© ${new Date().getFullYear()} ${site.brand}. ${site.footer.note}`;
+}
+</script>
+</body>
+</html>

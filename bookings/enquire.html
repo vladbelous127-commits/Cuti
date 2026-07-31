@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Request a quote</title>
+<meta name="description" content="Send an appearance booking enquiry.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="index.html" id="brand"></a>
+    <nav>
+      <a href="index.html#formats">Formats</a>
+      <a href="index.html#process">How it works</a>
+      <a href="index.html#faq">FAQ</a>
+      <span id="tgNav"></span>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap"><a class="back" href="index.html">← Back</a></div>
+
+<main class="wrap" id="main"></main>
+
+<footer>
+  <div class="wrap"><div class="fnote" id="fnote"></div></div>
+</footer>
+
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+const TG_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">'
+  + '<path d="M21.9 4.3 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1L18.1 6c.4-.4-.1-.6-.6-.2L6.1 12.9l-4.9-1.5c-1.1-.3-1.1-1 .2-1.5l19.1-7.4c.9-.3 1.7.2 1.4 1.8z"/></svg>';
+
+let DATA, formatId;
+
+fetch('data.json')
+  .then(r => r.json())
+  .then(data => { DATA = data; boot(); })
+  .catch(() => {
+    document.getElementById('main').innerHTML =
+      '<p class="lede" style="margin:60px 0">Could not load data.json. Serve this page over HTTP rather than opening the file directly.</p>';
+  });
+
+function telegramLink() {
+  const tg = DATA.site.contact?.telegram;
+  if (!tg?.show || !tg.href) return '';
+  return `<a href="${esc(tg.href)}" target="_blank" rel="noopener noreferrer"
+            style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--muted)">
+            ${TG_ICON}<span>${esc(tg.label || 'Telegram')}</span></a>`;
+}
+
+function boot() {
+  const { site } = DATA;
+  document.title = `Request a quote — ${site.brand}`;
+  document.getElementById('brand').innerHTML =
+    `${esc(site.brand)}<span>${esc(site.tagline)}</span>`;
+  document.getElementById('tgNav').innerHTML = telegramLink();
+  document.getElementById('fnote').textContent =
+    `© ${new Date().getFullYear()} ${site.brand}. ${site.footer.note}`;
+
+  // A format may be pre-selected from the listing; fall back to the shortest.
+  const wanted = new URLSearchParams(location.search).get('format');
+  formatId = DATA.formats.some(f => f.id === wanted) ? wanted : DATA.formats[0].id;
+
+  renderForm();
+}
+
+function renderForm() {
+  const { formats, enquiry } = DATA;
+  const today = new Date().toISOString().slice(0, 10);
+
+  document.getElementById('main').innerHTML = `
+  <form class="form-grid" id="form" novalidate>
+    <div>
+      <fieldset class="fieldset">
+        <legend>Which format?</legend>
+        <p class="hint">Pick the closest fit. The quote is tailored either way.</p>
+        <div class="pick" id="pick">
+          ${formats.map(f => `
+            <label>
+              <input type="radio" name="format" value="${esc(f.id)}" ${f.id === formatId ? 'checked' : ''}>
+              <span>
+                <span class="p-dur">${esc(f.duration)}</span> —
+                <span class="p-name">${esc(f.name)}</span>
+              </span>
+            </label>`).join('')}
+        </div>
+      </fieldset>
+
+      <fieldset class="fieldset">
+        <legend>About the event</legend>
+        <p class="hint">The more specific this is, the more accurate the quote.</p>
+        <div class="fields">
+          <div class="two-up">
+            <div class="field">
+              <label for="etype">Event type</label>
+              <select id="etype" name="etype" required>
+                ${enquiry.eventTypes.map(t => `<option>${esc(t)}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field">
+              <label for="edate">Preferred date</label>
+              <input id="edate" name="edate" type="date" min="${today}" required>
+            </div>
+          </div>
+          <div class="two-up">
+            <div class="field">
+              <label for="eloc">Location</label>
+              <input id="eloc" name="eloc" placeholder="City and venue" required>
+            </div>
+            <div class="field">
+              <label for="eguests">Expected guests <span class="opt">(optional)</span></label>
+              <input id="eguests" name="eguests" type="number" min="1" placeholder="e.g. 150">
+            </div>
+          </div>
+          <div class="field">
+            <label for="ebudget">Budget band</label>
+            <select id="ebudget" name="ebudget">
+              ${enquiry.budgetBands.map(b => `<option>${esc(b)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label for="edetails">What do you have in mind?</label>
+            <textarea id="edetails" name="edetails"
+              placeholder="Run of the day, what you would like covered, any content or press plans."></textarea>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="fieldset">
+        <legend>Your details</legend>
+        <p class="hint">We reply to this address within ${enquiry.responseDays} business days.</p>
+        <div class="fields">
+          <div class="two-up">
+            <div class="field">
+              <label for="name">Full name</label>
+              <input id="name" name="name" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="org">Company or organisation</label>
+              <input id="org" name="org" autocomplete="organization" required>
+            </div>
+          </div>
+          <div class="two-up">
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="phone">Phone <span class="opt">(optional)</span></label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel">
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <aside class="aside">
+      <h3>Your enquiry</h3>
+      <div class="rows" id="rows"></div>
+      <button class="btn btn-primary" type="submit">Send enquiry</button>
+      <p class="fineprint">
+        No payment is taken here and no fee is committed by sending this.
+        You will receive a written quote to review first.
+      </p>
+    </aside>
+  </form>`;
+
+  document.getElementById('form').addEventListener('change', e => {
+    if (e.target.name === 'format') formatId = e.target.value;
+    updateAside();
+  });
+  document.getElementById('form').addEventListener('input', updateAside);
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    if (!e.target.reportValidity()) return;
+    renderSent(new FormData(e.target));
+  });
+
+  updateAside();
+}
+
+function currentFormat() {
+  return DATA.formats.find(f => f.id === formatId) ?? DATA.formats[0];
+}
+
+function updateAside() {
+  const f = currentFormat();
+  const v = id => document.getElementById(id)?.value?.trim();
+  const date = v('edate');
+  const rows = [
+    ['Format', `${f.duration} — ${f.name}`],
+    ['Event', v('etype') || '—'],
+    ['Date', date ? new Date(date + 'T00:00:00').toLocaleDateString('en-GB',
+      { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : 'Not set'],
+    ['Location', v('eloc') || 'Not set'],
+    ['Budget', v('ebudget') || '—'],
+  ];
+  document.getElementById('rows').innerHTML = rows.map(([k, val]) =>
+    `<div class="row"><span>${esc(k)}</span><span>${esc(val)}</span></div>`).join('');
+}
+
+// A real backend would store the enquiry and issue this; generated here so the
+// confirmation has something to quote back.
+function makeReference() {
+  const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
+  const day = new Date().toISOString().slice(2, 10).replace(/-/g, '');
+  return `${DATA.enquiry.referencePrefix}-${day}-${rand}`;
+}
+
+function renderSent(fd) {
+  const f = currentFormat();
+  const ref = makeReference();
+  const date = fd.get('edate');
+  const tg = DATA.site.contact?.telegram;
+
+  const recap = [
+    ['Format', `${f.duration} — ${f.name}`],
+    ['Event type', fd.get('etype')],
+    ['Date', new Date(date + 'T00:00:00').toLocaleDateString('en-GB',
+      { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })],
+    ['Location', fd.get('eloc')],
+    ['Guests', fd.get('eguests') || 'Not stated'],
+    ['Budget band', fd.get('ebudget')],
+    ['Contact', `${fd.get('name')}, ${fd.get('org')}`],
+    ['Email', fd.get('email')],
+  ];
+
+  document.getElementById('main').innerHTML = `
+  <div class="sent">
+    <div class="sent-head">
+      <h2>Enquiry sent</h2>
+      <p>We will come back to ${esc(fd.get('email'))} within ${DATA.enquiry.responseDays} business days.</p>
+    </div>
+
+    <div class="refbox">
+      <div class="k">Your reference</div>
+      <div class="v">${esc(ref)}<button class="copy" type="button" data-copy="${esc(ref)}">Copy</button></div>
+    </div>
+
+    <div class="recap">
+      <h3>What you sent</h3>
+      <dl>${recap.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+    </div>
+
+    <div class="warn">
+      <b>Nothing is payable yet.</b> Your next message from us is a written quote.
+      A fee is only ever due against a signed agreement and an invoice in the
+      booker's name — never by transfer arranged over chat.
+    </div>
+
+    <div class="warn">
+      <b>Demo build.</b> This form does not send anywhere: the reference is
+      generated in the browser and the enquiry is not stored. Connect a form
+      handler or backend before publishing.
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px">
+      <a class="btn btn-ghost" href="index.html">Back to the site</a>
+      ${tg?.show && tg.href ? `<a class="btn btn-primary" href="${esc(tg.href)}"
+          target="_blank" rel="noopener noreferrer"
+          style="display:inline-flex;align-items:center;gap:8px">
+          ${TG_ICON}<span>${esc(tg.label || 'Telegram')}</span></a>` : ''}
+    </div>
+  </div>`;
+
+  document.getElementById('main').addEventListener('click', e => {
+    const btn = e.target.closest('.copy');
+    if (!btn) return;
+    navigator.clipboard?.writeText(btn.dataset.copy).then(() => {
+      const was = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(() => { btn.textContent = was; }, 1400);
+    }, () => {});
+  });
+
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

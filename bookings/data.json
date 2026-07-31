@@ -1,0 +1,238 @@
+{
+  "site": {
+    "brand": "Your Brand",
+    "tagline": "Appearances",
+    "title": "Your Brand — Appearance & VIP Meet Bookings",
+    "description": "Enquire about appearance, VIP meet and hosted event bookings.",
+    "_rename": "Change brand, tagline, title and talent.name below to make this yours.",
+    "hero": {
+      "eyebrow": "Appearance & VIP Meet Bookings",
+      "heading": "Book an appearance.",
+      "sub": "Meet-and-greets, brand guest appearances and hosted events. Tell us about your event and we will come back with a quote.",
+      "primaryCta": {
+        "label": "Request a quote",
+        "href": "enquire.html"
+      },
+      "secondaryCta": {
+        "label": "See formats",
+        "href": "#formats"
+      }
+    },
+    "footer": {
+      "note": "A demo booking site. Replace the placeholder brand and imagery before publishing.",
+      "columns": [
+        {
+          "title": "Bookings",
+          "links": [
+            {
+              "label": "Formats",
+              "href": "#formats"
+            },
+            {
+              "label": "Request a quote",
+              "href": "enquire.html"
+            },
+            {
+              "label": "How it works",
+              "href": "#process"
+            }
+          ]
+        },
+        {
+          "title": "Enquiries",
+          "links": [
+            {
+              "label": "FAQ",
+              "href": "#faq"
+            },
+            {
+              "label": "Contact",
+              "href": "#"
+            },
+            {
+              "label": "Press",
+              "href": "#"
+            }
+          ]
+        },
+        {
+          "title": "Legal",
+          "links": [
+            {
+              "label": "Terms",
+              "href": "#"
+            },
+            {
+              "label": "Privacy",
+              "href": "#"
+            },
+            {
+              "label": "Booking conditions",
+              "href": "#"
+            }
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "telegram": {
+        "label": "Telegram",
+        "href": "",
+        "show": true
+      },
+      "email": "bookings@example.com"
+    }
+  },
+  "talent": {
+    "name": "Talent Name",
+    "role": "Athlete · Brand Ambassador",
+    "bio": "Two or three sentences introducing who is being booked, what they are known for, and the kind of events they suit. Keep it short — the formats below carry the detail.",
+    "highlights": [
+      "Available for UK and international engagements",
+      "Brand, corporate, retail and fan events",
+      "Represented for all appearance enquiries"
+    ]
+  },
+  "gallery": {
+    "heading": "Gallery",
+    "note": "Use photography you own or have licensed for commercial use.",
+    "images": [
+      {
+        "src": "",
+        "alt": "Portrait",
+        "shape": "portrait"
+      },
+      {
+        "src": "",
+        "alt": "Event appearance",
+        "shape": "square"
+      },
+      {
+        "src": "",
+        "alt": "Brand shoot",
+        "shape": "portrait"
+      },
+      {
+        "src": "",
+        "alt": "Hosted event",
+        "shape": "square"
+      }
+    ]
+  },
+  "formats": [
+    {
+      "id": "vip-30",
+      "duration": "30 minutes",
+      "name": "VIP meet-and-greet",
+      "summary": "A focused meet for a small guest group, with photographs.",
+      "includes": [
+        "Managed guest rotation",
+        "Photo opportunity per guest",
+        "Pre-agreed guest numbers"
+      ]
+    },
+    {
+      "id": "private-60",
+      "duration": "1 hour",
+      "name": "Private fan meet or brand guest appearance",
+      "summary": "An extended meet, or a guest appearance at a brand activation.",
+      "includes": [
+        "Meet-and-greet with photographs",
+        "Brand content capture on request",
+        "Short scripted remarks if required"
+      ]
+    },
+    {
+      "id": "hosted-120",
+      "duration": "2 hours",
+      "name": "Hosted appearance",
+      "summary": "A hosting role across a defined segment of your event.",
+      "includes": [
+        "On-stage hosting or interview",
+        "Meet-and-greet segment",
+        "Photography and content window"
+      ]
+    },
+    {
+      "id": "presence-180",
+      "duration": "3 hours",
+      "name": "Full event presence",
+      "summary": "Extended attendance across the run of an event.",
+      "includes": [
+        "Hosting, interview and Q&A",
+        "Guest meet-and-greet",
+        "Press and content commitments"
+      ]
+    }
+  ],
+  "quoting": {
+    "heading": "How quotes work",
+    "note": "Fees are quoted per enquiry rather than listed, because the final figure depends on the factors below.",
+    "factors": [
+      "Event type and audience",
+      "Location and travel",
+      "Date, timing and duration",
+      "Exclusivity and category conflicts",
+      "Content, press and usage rights",
+      "Management approval"
+    ]
+  },
+  "process": [
+    {
+      "title": "Send your enquiry",
+      "detail": "Tell us the event, date, location and the format you have in mind."
+    },
+    {
+      "title": "We review availability",
+      "detail": "We check the date against existing commitments and confirm whether it can proceed."
+    },
+    {
+      "title": "You receive a quote",
+      "detail": "A written quote covering fee, travel, and any content or exclusivity terms."
+    },
+    {
+      "title": "Contract and invoice",
+      "detail": "Terms are agreed in writing and invoiced. Nothing is payable through this site."
+    }
+  ],
+  "enquiry": {
+    "referencePrefix": "ENQ",
+    "responseDays": 2,
+    "eventTypes": [
+      "Brand activation",
+      "Corporate event",
+      "Retail or store opening",
+      "Fan event",
+      "Awards or gala",
+      "Conference or panel",
+      "Press or media day",
+      "Other"
+    ],
+    "budgetBands": [
+      "Prefer to discuss",
+      "Under £5,000",
+      "£5,000 – £10,000",
+      "£10,000 – £15,000",
+      "£15,000 – £25,000",
+      "Over £25,000"
+    ]
+  },
+  "faq": [
+    {
+      "q": "Why are fees not listed?",
+      "a": "Appearance fees move with event type, location, travel, timing and exclusivity, so a listed number would be wrong more often than right. Send an enquiry and you will get a written quote covering the whole engagement."
+    },
+    {
+      "q": "How far ahead should I enquire?",
+      "a": "As early as you can. Dates are held against existing commitments, and international travel or exclusivity checks take longer to confirm."
+    },
+    {
+      "q": "Is anything payable through this site?",
+      "a": "No. This site only collects enquiries. Any fee is agreed in a written contract and invoiced separately — treat a request to transfer money through a booking page as a warning sign."
+    },
+    {
+      "q": "Can we film or photograph the appearance?",
+      "a": "Usually, with the usage agreed in advance. Tell us what you intend to capture and where it will run, and it will be covered in the quote."
+    }
+  ]
+}
