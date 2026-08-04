@@ -1,2 +1,6 @@
 .env
 node_modules/
+
+# Python bytecode, regenerated whenever the .claude skill scripts run
+__pycache__/
+*.py[cod]
