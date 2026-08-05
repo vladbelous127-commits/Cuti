@@ -18,6 +18,11 @@ import {
   SiteFooterFailingDemo,
 } from "../../components/ui/site-footer.demo";
 import { SiteNavbarDemo, SiteNavbarMinimalDemo } from "../../components/ui/site-navbar.demo";
+import {
+  OrbitingCirclesDemo,
+  OrbitingCirclesRemoteDemo,
+  OrbitingCirclesSingleRingDemo,
+} from "../../components/ui/orbiting-circles-02.demo";
 
 /**
  * Every demo the e2e suite can mount, keyed by the `?demo=` query parameter.
@@ -40,6 +45,12 @@ const REGISTRY: Record<string, React.ComponentType> = {
 
   "navbar": SiteNavbarDemo,
   "navbar-minimal": SiteNavbarMinimalDemo,
+
+  "orbiting": OrbitingCirclesDemo,
+  // Reaches images.shadcnspace.com, so it is deliberately outside the specs
+  // that assert a clean console.
+  "orbiting-remote": OrbitingCirclesRemoteDemo,
+  "orbiting-single": OrbitingCirclesSingleRingDemo,
 };
 
 const name = new URLSearchParams(window.location.search).get("demo") ?? "";
