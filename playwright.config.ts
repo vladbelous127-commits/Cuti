@@ -35,5 +35,9 @@ export default defineConfig({
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    // Surface the server's own output, so a startup failure is diagnosable from
+    // the CI log rather than showing only "timed out waiting for webServer".
+    stdout: "pipe",
+    stderr: "pipe",
   },
 });
