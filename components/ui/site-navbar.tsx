@@ -170,7 +170,7 @@ export function SiteNavbar({
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5 sm:px-8 lg:px-10">
         <a
           href={brandHref}
-          className="nav-focus shrink-0 cursor-pointer font-[family-name:var(--nav-font-display)] text-lg font-bold tracking-[-0.01em] text-[color:var(--nav-fg)]"
+          className="nav-focus inline-flex min-h-[44px] shrink-0 cursor-pointer items-center font-[family-name:var(--nav-font-display)] text-lg font-bold tracking-[-0.01em] text-[color:var(--nav-fg)]"
         >
           {brandNode ?? brand}
         </a>
@@ -350,6 +350,10 @@ const css = `
   top: 0.5rem;
   z-index: 50;
   transform: translateY(-200%);
+  display: inline-flex;
+  align-items: center;
+  /* It is a real control, so it carries the same 44px minimum as the rest. */
+  min-height: 44px;
   border-radius: 0.5rem;
   background: var(--nav-primary);
   color: var(--nav-on-primary);

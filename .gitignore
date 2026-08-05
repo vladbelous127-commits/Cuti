@@ -4,3 +4,10 @@ node_modules/
 # Python bytecode, regenerated whenever the .claude skill scripts run
 __pycache__/
 *.py[cod]
+
+# Build and test output
+dist-harness/
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
