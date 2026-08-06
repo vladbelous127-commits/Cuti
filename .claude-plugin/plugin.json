@@ -1,0 +1,19 @@
+{
+  "name": "business-skills-pack",
+  "description": "34 business-focused skills for Claude Code: marketing, sales, finance, operations, HR, product, customer success, strategy, and analytics.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Cuti"
+  },
+  "keywords": [
+    "business",
+    "marketing",
+    "sales",
+    "finance",
+    "operations",
+    "hr",
+    "product",
+    "strategy",
+    "skills"
+  ]
+}
