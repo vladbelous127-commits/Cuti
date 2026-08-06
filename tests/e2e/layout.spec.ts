@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
  * nothing overflows horizontally, and interactive targets are big enough.
  */
 
-const DEMOS = ["hero", "pricing", "testimonials", "footer", "navbar"] as const;
+const DEMOS = ["hero", "pricing", "testimonials", "footer", "navbar", "orbiting"] as const;
 
 const WIDTHS = [375, 768, 1024, 1440];
 
@@ -16,6 +16,7 @@ const ROOTS: Record<(typeof DEMOS)[number], { selector: string; light: string; d
   testimonials: { selector: ".tst-root", light: "rgb(248, 250, 252)", dark: "rgb(11, 18, 32)" },
   footer: { selector: ".footer-root", light: "rgb(239, 243, 248)", dark: "rgb(8, 14, 26)" },
   navbar: { selector: ".nav-root", light: "rgb(248, 250, 252)", dark: "rgb(11, 18, 32)" },
+  orbiting: { selector: ".orb-root", light: "rgb(248, 250, 252)", dark: "rgb(11, 18, 32)" },
 };
 
 for (const demo of DEMOS) {
@@ -85,7 +86,7 @@ test.describe("touch targets", () => {
 
       const undersized = await page.evaluate(() => {
         const root = document.querySelector(
-          ".hero-root, .pricing-root, .tst-root, .footer-root, .nav-root",
+          ".hero-root, .pricing-root, .tst-root, .footer-root, .nav-root, .orb-root",
         );
         if (!root) return [];
 
